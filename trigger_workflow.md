@@ -1,40 +1,83 @@
-# HU 3.8.2 - Configurar el trigger del workflow amb esdeveniments de push
+# HU 3.8.1 - Crear fitxer de workflow per GitHub Actions
 
 ## Objectiu
-Configurar el trigger del workflow de GitHub Actions per tal que s'executi automàticament quan es faci un `push` a la branca principal (`main`). Això permet automatitzar el procés de construcció i desplegament de la imatge Docker quan es detecten nous canvis al repositori.
+
+Crear un fitxer de workflow que automatitzi la construcció i (opcionalment) el desplegament d'una imatge Docker mitjançant GitHub Actions. Aquest fitxer permet que, quan es detectin esdeveniments de codi (com ara un `push`), es pugui executar una sèrie d'accions automatitzades sense intervenció manual.
 
 ## Passos realitzats
 
-1. **Obrir el fitxer del workflow:**
-   Es localitza el fitxer `.github/workflows/docker_build_push.yml` dins del projecte.
+1. **Crear les carpetes necessàries:**
+   Es crea la jerarquia de carpetes dins del projecte:
 
-2. **Afegir la configuració del trigger:**
-   Es configura l'activador per detectar esdeveniments de `push` a la branca `main`:
+   ```bash
+   mkdir -p .github/workflows
+   ```
+
+2. **Crear el fitxer de workflow:**
+   Dins de la carpeta `.github/workflows/` es crea el fitxer `docker_build_push.yml` amb el contingut inicial:
 
    ```yaml
+   name: Build and Push Docker Image
+
    on:
      push:
        branches:
          - main
+
+   jobs:
+     build-and-push:
+       runs-on: ubuntu-latest
+
+       steps:
+         - name: Checkout source code
+           uses: actions/checkout@v4
+
+         - name: Login to DockerHub
+           uses: docker/login-action@v3
+           with:
+             username: ${{ secrets.DOCKERHUB_USERNAME }}
+             password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+         - name: Build Docker image
+           run: |
+             docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/via-project-a:latest -t ${{ secrets.DOCKERHUB_USERNAME }}/via-project-a:${{ github.sha }} .
+
+         - name: Push Docker image with 'latest' tag
+           run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/via-project-a:latest
+
+         - name: Push Docker image with 'commit hash' tag
+           run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/via-project-a:${{ github.sha }}
    ```
 
-3. **Guardar i commitejar el canvi:**
-   Un cop afegida la configuració, es desa el fitxer i s'executen les ordres:
+3. **Crear secrets al repositori de GitHub:**
+   A GitHub > Settings > Secrets and variables > Actions:
+
+   - `DOCKERHUB_USERNAME`: nom d'usuari de DockerHub.
+   - `DOCKERHUB_TOKEN`: token d'accés generat des de [https://hub.docker.com/settings/security](https://hub.docker.com/settings/security).
+
+4. **Fer commit i push del fitxer:**
 
    ```bash
    git add .github/workflows/docker_build_push.yml
-   git commit -m "Configurar trigger del workflow per esdeveniments de push"
+   git commit -m "Create GitHub Actions workflow to build and push Docker image"
    git push
    ```
 
-4. **Verificar l'execució del workflow:**
-   Es comprova que el workflow s'ha executat automàticament des de la pestanya `Actions` de GitHub un cop fet el `push`.
+5. **Verificar execució del workflow:**
+   A la pestanya `Actions` del repositori, es pot comprovar que el workflow s'ha iniciat automàticament.
 
 ## Resultat esperat
 
-- El workflow s'activa automàticament quan es fa un `push` a la branca `main`.
-- L'activador està ben configurat mitjançant `on: push -> branches: main`.
-- El workflow apareix a GitHub Actions i comença l'execució automàtica sense intervenció manual.
+- El fitxer de workflow `docker_build_push.yml` es troba dins del repositori.
+- El seu contingut està preparat per a ser activat amb un `push` a la branca `main`.
+- El workflow està llest per ser validat amb esdeveniments futurs.
+
+## Observacions
+
+- Encara que el `push` de la imatge falli si no existeix el repositori o no hi ha permisos, la creació del fitxer és completament funcional.
+- Els secrets `DOCKERHUB_USERNAME` i `DOCKERHUB_TOKEN` han d'estar definits en el repositori de GitHub per tal que el login funcioni correctament.
+
+
 
 ## Observacions
 - Aquest pas és essencial per garantir l'automatització del desplegament.
