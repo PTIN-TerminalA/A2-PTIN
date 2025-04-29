@@ -1,0 +1,30 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/VIA:latest -t ${{ secrets.DOCKERHUB_USERNAME }}/mi-imagen:${{ github.sha }} .
+
+      - name: Push Docker image with 'latest' tag
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/VIA:latest
+
+      - name: Push Docker image with 'commit hash' tag
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/VIA:${{ github.sha }}
