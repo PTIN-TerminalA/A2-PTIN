@@ -21,10 +21,10 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/VIA:latest -t ${{ secrets.DOCKERHUB_USERNAME }}/mi-imagen:${{ github.sha }} .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/via:latest -t ${{ secrets.DOCKERHUB_USERNAME }}/via:${{ github.sha }} .
 
       - name: Push Docker image with 'latest' tag
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/VIA:latest
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/via:latest
 
       - name: Push Docker image with 'commit hash' tag
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/VIA:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/via:${{ github.sha }}
