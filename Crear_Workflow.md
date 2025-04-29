@@ -49,13 +49,22 @@ Crear un fitxer de workflow que automatitzi la construcció i (opcionalment) el 
            run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/via-project-a:${{ github.sha }}
    ```
 
-3. **Guardar i afegir el fitxer al repositori:**
+3. **Crear secrets al repositori de GitHub:**
+   A GitHub > Settings > Secrets and variables > Actions:
+
+   - `DOCKERHUB_USERNAME`: nom d'usuari de DockerHub.
+   - `DOCKERHUB_TOKEN`: token d'accés generat des de [https://hub.docker.com/settings/security](https://hub.docker.com/settings/security).
+
+4. **Fer commit i push del fitxer:**
 
    ```bash
    git add .github/workflows/docker_build_push.yml
    git commit -m "Create GitHub Actions workflow to build and push Docker image"
    git push
    ```
+
+5. **Verificar execució del workflow:**
+   A la pestanya `Actions` del repositori, es pot comprovar que el workflow s'ha iniciat automàticament.
 
 ## Resultat esperat
 
@@ -67,4 +76,5 @@ Crear un fitxer de workflow que automatitzi la construcció i (opcionalment) el 
 
 - Encara que el `push` de la imatge falli si no existeix el repositori o no hi ha permisos, la creació del fitxer és completament funcional.
 - Els secrets `DOCKERHUB_USERNAME` i `DOCKERHUB_TOKEN` han d'estar definits en el repositori de GitHub per tal que el login funcioni correctament.
+
 
