@@ -1,14 +1,12 @@
 from pydantic import BaseModel
-from typing import Literal, Dict
+from typing import Literal
 
-class CommandRequest(BaseModel):
-    command: Literal["move"]
-    direction: Literal["forward", "back", "right", "left"]
-
-class Coordinates(BaseModel):
+class Punt(BaseModel):
     x: float
     y: float
-    orientation: Literal["north", "south", "east", "west"]
 
-class PositionReport(BaseModel):
-    coordinates: Coordinates
+class DemanaCotxeRequest(BaseModel):
+    origen: Punt
+    desti: Punt
+    usuari: str
+#quitar usuari
