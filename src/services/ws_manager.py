@@ -34,6 +34,16 @@ async def send_command_to_all(command: dict):
 
 async def start_ws_server():
     print("WebSocket (cotxe) escoltant al port 8765 (integrat amb FastAPI)")
+    
+    '''
+    # Crear context SSL
+    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ssl_context.load_cert_chain(certfile="certs/cert.pem", keyfile="certs/key.pem")
+    
+    async with websockets.serve(ws_handler, "0.0.0.0", 8765, ssl=ssl_context):
+        await asyncio.Future()  # no
+    '''
+    
     async with websockets.serve(ws_handler, "0.0.0.0", 8765):
         await asyncio.Future()  # no s'atura
 
