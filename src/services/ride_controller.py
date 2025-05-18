@@ -31,12 +31,13 @@ async def processar_peticio(request: DemanaCotxeRequest):
     logger.info(f"Processant petició de cotxe per usuari_id={request.usuari_id} des de {request.origen} fins a {request.desti}")
     
     #vehicle = await buscar_vehicle_disponible(request.origen)
-    vehicle_id, info = next(iter(vehicle_data.items()))
-    origen = info["position"]  # Això és un Punt
     
-    if not vehicle_id:
-        logger.warning("No s'ha trobat cap vehicle disponible per la zona sol·licitada")
+    if not vehicle_data:
+        logger.warning("No hi ha cap vehicle disponible (vehicle_data està buit)")
         return {"error": "No hi ha cap vehicle disponible"}
+
+    vehicle_id, info = next(iter(vehicle_data.items()))
+    origen = info.get("position")
 
     logger.info(f"Vehicle {vehicle_id} assignat provisionalment. Obtenint ruta...")
     

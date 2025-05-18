@@ -5,7 +5,7 @@ import asyncio
 import websockets
 import json
 
-# vehicle_data = { vehicle_id: {"position": Punt(x, y), "state": "stopped" or "moving"} }
+# vehicle_data = { vehicle_id: {"coordinates": Punt(x, y), "state": "stopped" or "moving"} }
 vehicle_data = {}
 
 connected_clients = set()  # Ya definido si tienes el server websocket
@@ -22,17 +22,16 @@ async def enviar_ruta_al_vehicle(vehicle_id: str, ruta: list):
 async def ws_handler(websocket):
     connected_clients.add(websocket)
     try:
-        async for message in websocket:
+        async for message in websocket:    
             data = json.loads(message)
-            #print(f"Posició rebuda del cotxe: {data}")
             
             vehicle_id = data.get("id")
-            position = data.get("position")
+            position = data.get("coordinates")
             state = data.get("state")
             
             if vehicle_id and position:
                 vehicle_data[vehicle_id] = {
-                    "position": Punt(position["x"], position["y"]),
+                    "position": Punt(x=position["x"], y=position["y"]),
                     "state": state
                 }
                 

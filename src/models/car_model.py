@@ -1,5 +1,5 @@
 from typing import Optional
-from services.ws_manager import vehicle_positions
+from services.ws_manager import vehicle_data
 from enum import Enum
 
 class VehicleState(Enum):
