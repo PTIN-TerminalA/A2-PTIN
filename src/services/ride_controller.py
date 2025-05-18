@@ -12,7 +12,7 @@ logging.basicConfig(
 )
 
 async def obtenir_ruta(origen, desti):
-    url = "http://10.60.0.3/path"
+    url = "http://10.60.0.3:8081/path"
     payload = {
         "start": [origen.x, origen.y],
         "goal": [desti.x, desti.y]
@@ -28,10 +28,10 @@ async def obtenir_ruta(origen, desti):
 
 async def processar_peticio(request: DemanaCotxeRequest):
     
-    logger.info(f"Processant petició de cotxe per usuari_id={request.usuari_id} des de {request.origen} fins a {request.desti}")
+    logger.info(f"Processant petició de cotxe per {request.desti}")
     
     #vehicle = await buscar_vehicle_disponible(request.origen)
-    
+
     if not vehicle_data:
         logger.warning("No hi ha cap vehicle disponible (vehicle_data està buit)")
         return {"error": "No hi ha cap vehicle disponible"}
@@ -47,6 +47,7 @@ async def processar_peticio(request: DemanaCotxeRequest):
     logger.debug(f"[TRAJECTE] vehicle {vehicle_id} rebrà ruta amb {len(ruta.get('path', []))} punts")
 
     await enviar_ruta_al_vehicle(vehicle_id, ruta)
+    #await enviar_ruta_web(ruta)
     
     logger.info(f"Ruta enviada correctament al vehicle {vehicle_id}")
 
