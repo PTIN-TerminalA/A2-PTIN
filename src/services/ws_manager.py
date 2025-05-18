@@ -24,7 +24,7 @@ async def ws_handler(websocket):
     try:
         async for message in websocket:
             data = json.loads(message)
-            print(f"Posició rebuda del cotxe: {data}")
+            #print(f"Posició rebuda del cotxe: {data}")
             
             vehicle_id = data.get("id")
             position = data.get("position")
@@ -36,6 +36,8 @@ async def ws_handler(websocket):
                     "state": state
                 }
                 
+            print(f"Vehicles actualitzats: {vehicle_data}")
+            
             await broadcast_position_to_web(data)
     finally:
         connected_clients.remove(websocket)
