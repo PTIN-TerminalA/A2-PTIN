@@ -7,5 +7,3 @@ class Punt(BaseModel):
 
 class DemanaCotxeRequest(BaseModel):
     desti: Punt
-    usuari: str
-#quitar usuari
