@@ -6,7 +6,6 @@ class Punt(BaseModel):
     y: float
 
 class DemanaCotxeRequest(BaseModel):
-    origen: Punt
     desti: Punt
     usuari: str
 #quitar usuari

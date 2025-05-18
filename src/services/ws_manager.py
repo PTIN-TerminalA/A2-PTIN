@@ -1,7 +1,12 @@
+from services.ws_web_server import broadcast_position_to_web
+from models.controller_model import Punt
+import ssl
 import asyncio
 import websockets
 import json
-from services.ws_web_server import broadcast_position_to_web
+
+# vehicle_data = { vehicle_id: {"position": Punt(x, y), "state": "stopped" or "moving"} }
+vehicle_data = {}
 
 connected_clients = set()  # Ya definido si tienes el server websocket
 
@@ -20,6 +25,17 @@ async def ws_handler(websocket):
         async for message in websocket:
             data = json.loads(message)
             print(f"Posició rebuda del cotxe: {data}")
+            
+            vehicle_id = data.get("id")
+            position = data.get("position")
+            state = data.get("state")
+            
+            if vehicle_id and position:
+                vehicle_data[vehicle_id] = {
+                    "position": Punt(position["x"], position["y"]),
+                    "state": state
+                }
+                
             await broadcast_position_to_web(data)
     finally:
         connected_clients.remove(websocket)

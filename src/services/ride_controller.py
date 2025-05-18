@@ -1,6 +1,7 @@
-from models.controller_model import DemanaCotxeRequest
+from models.controller_model import DemanaCotxeRequest, Punt
 from models.car_model import buscar_vehicle_disponible
 from services.ws_manager import enviar_ruta_al_vehicle
+from services.ws_manager import vehicle_data
 import httpx
 import logging
 
@@ -26,25 +27,29 @@ async def obtenir_ruta(origen, desti):
         return response.json()
 
 async def processar_peticio(request: DemanaCotxeRequest):
+    
     logger.info(f"Processant petició de cotxe per usuari_id={request.usuari_id} des de {request.origen} fins a {request.desti}")
     
-    vehicle = await buscar_vehicle_disponible(request.origen)
-
-    if not vehicle:
+    #vehicle = await buscar_vehicle_disponible(request.origen)
+    vehicle_id, info = next(iter(vehicle_data.items()))
+    origen = info["position"]  # Això és un Punt
+    
+    if not vehicle_id:
         logger.warning("No s'ha trobat cap vehicle disponible per la zona sol·licitada")
         return {"error": "No hi ha cap vehicle disponible"}
 
-    logger.info(f"Vehicle {vehicle.id} assignat provisionalment. Obtenint ruta...")
+    logger.info(f"Vehicle {vehicle_id} assignat provisionalment. Obtenint ruta...")
     
-    ruta = await obtenir_ruta(request.origen, request.desti)
+    # El origen sempre serà el cotxe
+    ruta = await obtenir_ruta(origen, request.desti)
     
-    logger.debug(f"[TRAJECTE] vehicle {vehicle.id} rebrà ruta amb {len(ruta.get('path', []))} punts")
+    logger.debug(f"[TRAJECTE] vehicle {vehicle_id} rebrà ruta amb {len(ruta.get('path', []))} punts")
 
-    await enviar_ruta_al_vehicle(vehicle.id, ruta)
+    await enviar_ruta_al_vehicle(vehicle_id, ruta)
     
-    logger.info(f"Ruta enviada correctament al vehicle {vehicle.id}")
+    logger.info(f"Ruta enviada correctament al vehicle {vehicle_id}")
 
     return {
-        "vehicle_id": vehicle.id,
+        "vehicle_id": vehicle_id,
         "ruta": ruta
     }

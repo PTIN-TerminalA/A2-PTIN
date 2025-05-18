@@ -1,6 +1,7 @@
 import asyncio
 import websockets
 import json
+import ssl
 
 # Clients web connectats
 connected_web_clients = set()
@@ -15,6 +16,15 @@ async def web_socket_server():
         finally:
             connected_web_clients.remove(websocket)
             print("Client Web desconnectat")
+
+    '''
+    # Crear context SSL
+    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ssl_context.load_cert_chain(certfile="certs/cert.pem", keyfile="certs/key.pem")
+    
+    async with websockets.serve(ws_handler, "0.0.0.0", 8765, ssl=ssl_context):
+        await asyncio.Future()  # no
+    '''
 
     print("Servidor WebSocket per a la Web en marxa al port 8766")
     async with websockets.serve(handler, "0.0.0.0", 8766):
