@@ -14,8 +14,8 @@ Documentar el flux complet que permet al Controller sol·licitar una ruta, rebre
 
 **Dades enviades:**
 
-* Origen: coordenades GPS (lat, lon)
-* Destí: coordenades GPS (lat, lon)
+* Origen: coordenades (X,Y)
+* Destí: coordenades (X,Y)
 
 **Exemple de petició HTTP:**
 
@@ -23,8 +23,8 @@ Documentar el flux complet que permet al Controller sol·licitar una ruta, rebre
 POST /api/routes
 Content-Type: application/json
 {
-  "origin": { "lat": 41.223, "lon": 1.726 },
-  "destination": { "lat": 41.225, "lon": 1.729 }
+  "origin": { "X": 41.223, "Y": 1.726 },
+  "destination": { "X": 41.225, "Y": 1.729 }
 }
 ```
 
@@ -33,9 +33,9 @@ Content-Type: application/json
 ```json
 {
   "route": [
-    {"lat": 41.223, "lon": 1.726},
-    {"lat": 41.224, "lon": 1.727},
-    {"lat": 41.225, "lon": 1.729}
+    {"X": 41.223, "Y": 1.726},
+    {"X": 41.224, "Y": 1.727},
+    {"X": 41.225, "Y": 1.729}
   ],
   "status": "ok"
 }
@@ -63,19 +63,19 @@ Content-Type: application/json
 
 ```json
 {
-  "vehicle_id": "V-102",
+  "_id": "C3",
   "instructions": [
-    {"lat": 41.223, "lon": 1.726},
-    {"lat": 41.224, "lon": 1.727},
-    {"lat": 41.225, "lon": 1.729}
+    {"X": 41.223, "Y": 1.726},
+    {"X": 41.224, "Y": 1.727},
+    {"X": 41.225, "Y": 1.729}
   ]
 }
 ```
 
 **Logs:**
 
-* `INFO [Controller] Instruccions enviades a vehicle V-102`
-* `DEBUG [MQTT] Missatge publicat a topic /vehicle/V-102/route`
+* `INFO [Controller] Instruccions enviades a vehicle C3`
+* `DEBUG [MQTT] Missatge publicat a topic /vehicle/C3/route`
 
 ---
 
@@ -94,15 +94,15 @@ Content-Type: application/json
 
 ```json
 {
-  "vehicle_id": "V-102",
-  "status": "en_ruta",
-  "current_position": {"lat": 41.224, "lon": 1.727}
+  "_id": "C3",
+  "status": "Solicitat",
+  "current_position": {"X": 41.224, "Y": 1.727}
 }
 ```
 
 **Logs:**
 
-* `INFO [Tracking] Vehicle V-102 passant per punt 2/3`
+* `INFO [Tracking] Vehicle C3 passant per punt 2/3`
 * `WARN [Tracking] Desviació detectada. Distància > 10m`
 
 ---
@@ -145,7 +145,7 @@ Content-Type: application/json
 **Logs:**
 
 * `METRIC route_request_duration_seconds{status="ok"} 0.412`
-* `METRIC vehicle_tracking_events_total{vehicle="V-102"} 12`
+* `METRIC vehicle_tracking_events_total{vehicle="C3"} 12`
 
 ---
 
