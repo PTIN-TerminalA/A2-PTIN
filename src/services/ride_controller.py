@@ -12,7 +12,7 @@ logging.basicConfig(
 )
 
 async def obtenir_ruta(origen, desti):
-    url = "http://192.168.10.12/path"
+    url = "http://10.60.0.3/path"
     payload = {
         "start": [origen.x, origen.y],
         "goal": [desti.x, desti.y]
